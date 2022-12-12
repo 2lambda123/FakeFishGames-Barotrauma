@@ -20,10 +20,15 @@ namespace Barotrauma.Items.Components
         private float rechargeSpeed;
         private float lastSentCharge;
 
+        //locks slider interaction if speed is set via connection
+        private float rechargeSliderLockTimer;
+
         //charge indicator description
         protected Vector2 indicatorPosition, indicatorSize;
 
         protected bool isHorizontal;
+
+        public bool IsAutoControlled => rechargeSliderLockTimer > 0.0f;
 
         protected override PowerPriority Priority { get { return PowerPriority.Battery; } }
 
@@ -104,9 +109,9 @@ namespace Barotrauma.Items.Components
             get { return rechargeSpeed; }
             set
             {
-                if (!MathUtils.IsValid(value)) return;              
+                if (!MathUtils.IsValid(value)) return;
                 rechargeSpeed = MathHelper.Clamp(value, 0.0f, maxRechargeSpeed);
-                rechargeSpeed = MathUtils.RoundTowardsClosest(rechargeSpeed, Math.Max(maxRechargeSpeed * 0.1f, 1.0f));
+                rechargeSpeed = MathUtils.RoundTowardsClosest(rechargeSpeed, Math.Max(maxRechargeSpeed * 0.01f, 1.0f));
                 if (isRunning)
                 {
                     HasBeenTuned = true;
@@ -148,6 +153,8 @@ namespace Barotrauma.Items.Components
 
         public override void Update(float deltaTime, Camera cam) 
         {
+            rechargeSliderLockTimer -= deltaTime;
+
             if (item.Connections == null) 
             {
                 IsActive = false;
@@ -361,6 +368,7 @@ namespace Barotrauma.Items.Components
 
                     float rechargeRate = MathHelper.Clamp(tempSpeed / 100.0f, 0.0f, 1.0f);
                     RechargeSpeed = rechargeRate * MaxRechargeSpeed;
+                    rechargeSliderLockTimer = 0.1f;
 #if CLIENT
                     if (rechargeSpeedSlider != null)
                     {
