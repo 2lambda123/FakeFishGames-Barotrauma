@@ -1327,6 +1327,7 @@ namespace Barotrauma
             {
                 if (!connectedSubs.Contains(item.Submarine)) { continue; }
                 if (!item.HasTag("cargocontainer")) { continue; }
+                if (item.HasTag("disallowcargo")) { continue; }
                 if (item.NonInteractable || item.HiddenInGame) { continue; }
                 var itemContainer = item.GetComponent<ItemContainer>();
                 if (itemContainer == null) { continue; }
