@@ -1285,7 +1285,7 @@ namespace Barotrauma
         }
 
         public void DrawHUD(SpriteBatch spriteBatch, Camera cam, Character character)
-        {
+        { 
             if (HasInGameEditableProperties && (character.SelectedItem == this || EditableWhenEquipped))
             {
                 DrawEditing(spriteBatch, cam);
@@ -1298,6 +1298,9 @@ namespace Barotrauma
                     ic.DrawHUD(spriteBatch, character);
                 }
             }
+
+            Sprite wearableOverlay = GetComponent<Wearable>()?.WearableOverlay;
+            wearableOverlay?.Draw(spriteBatch, Vector2.Zero, Color.White, Vector2.Zero, 0f, new Vector2(GameMain.GraphicsWidth / wearableOverlay.size.X, GameMain.GraphicsHeight / wearableOverlay.size.Y));
 
             if (GameMain.DebugDraw)
             {
